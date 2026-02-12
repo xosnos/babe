@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { useTimer, formatTime } from '../hooks/useTimer'
 import { FOOD_PRESETS } from '../types'
+import { InAppToast } from './InAppToast'
 
 const PRESET_LABELS: Record<string, string> = {
   'Soft Boiled Egg': 'Soft & runny',
@@ -9,20 +10,29 @@ const PRESET_LABELS: Record<string, string> = {
   'Ramen Noodles': 'Slurp time!',
 }
 
+const FOOD_TOAST = { title: 'Food Timer Complete! 🔔', body: 'Your food is ready!' }
+
 export default function FoodTimer() {
   const [selectedPreset, setSelectedPreset] = useState<number | null>(null)
   const [customMinutes, setCustomMinutes] = useState('')
   const [customSeconds, setCustomSeconds] = useState('')
   const [celebrating, setCelebrating] = useState(false)
+  const [toast, setToast] = useState({ visible: false, title: '', body: '' })
 
   const handleComplete = useCallback(() => {
-    // Show notification
-    window.electronAPI?.showNotification(
-      'Food Timer Complete! 🔔',
-      'Your food is ready!'
-    )
+    const showFallback = () => setToast({ visible: true, ...FOOD_TOAST })
 
-    // In-app celebration
+    if (window.electronAPI) {
+      window.electronAPI
+        .showNotification(FOOD_TOAST.title, FOOD_TOAST.body)
+        .then((result) => {
+          if (!result?.success) showFallback()
+        })
+        .catch(() => showFallback())
+    } else {
+      showFallback()
+    }
+
     setCelebrating(true)
     setTimeout(() => setCelebrating(false), 3000)
   }, [])
@@ -175,6 +185,13 @@ export default function FoodTimer() {
           </div>
         </div>
       )}
+
+      <InAppToast
+        visible={toast.visible}
+        title={toast.title}
+        body={toast.body}
+        onDismiss={() => setToast((t) => ({ ...t, visible: false }))}
+      />
     </div>
   )
 }

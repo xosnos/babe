@@ -12,7 +12,7 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div className={`min-h-screen overflow-y-auto p-8 pb-16 bg-hearts-pattern transition-opacity duration-500 ${show ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`min-h-screen overflow-y-auto p-4 sm:p-6 md:p-8 pb-16 bg-hearts-pattern transition-opacity duration-500 ${show ? 'opacity-100' : 'opacity-0'}`}>
       {/* Dedicated drag region for Electron window */}
       <div className="drag-region fixed top-0 left-0 right-0 h-8 z-40 pointer-events-auto" />
 
@@ -37,7 +37,7 @@ export default function Dashboard() {
         {/* Header */}
         <header className="text-center mb-8 pt-4">
           <h1 className="pixel-text text-2xl md:text-3xl text-valentine-700 mb-3 flex items-center justify-center gap-3">
-            My Valentine Dashboard
+            Babe
             <span className="text-2xl animate-heartbeat" role="img" aria-label="Heart">💖</span>
           </h1>
           <p className="font-cute text-valentine-500 text-lg">

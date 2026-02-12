@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useTimer, formatTime } from '../hooks/useTimer'
+import { InAppToast } from './InAppToast'
 
 const PRESETS = [
   { label: '15 min', duration: 15 * 60, emoji: '⚡' },
@@ -7,18 +8,27 @@ const PRESETS = [
   { label: '45 min', duration: 45 * 60, emoji: '💪' },
 ]
 
+const POMODORO_TOAST = { title: 'Pomodoro Complete! 🎉', body: 'Great work! Time for a break.' }
+
 export default function PomodoroTimer() {
   const [selectedPreset, setSelectedPreset] = useState(1) // Default to 25 min
   const [celebrating, setCelebrating] = useState(false)
+  const [toast, setToast] = useState({ visible: false, title: '', body: '' })
 
   const handleComplete = useCallback(() => {
-    // Show notification
-    window.electronAPI?.showNotification(
-      'Pomodoro Complete! 🎉',
-      'Great work! Time for a break.'
-    )
+    const showFallback = () => setToast({ visible: true, ...POMODORO_TOAST })
 
-    // In-app celebration
+    if (window.electronAPI) {
+      window.electronAPI
+        .showNotification(POMODORO_TOAST.title, POMODORO_TOAST.body)
+        .then((result) => {
+          if (!result?.success) showFallback()
+        })
+        .catch(() => showFallback())
+    } else {
+      showFallback()
+    }
+
     setCelebrating(true)
     setTimeout(() => setCelebrating(false), 3000)
   }, [])
@@ -122,6 +132,13 @@ export default function PomodoroTimer() {
           </div>
         </div>
       )}
+
+      <InAppToast
+        visible={toast.visible}
+        title={toast.title}
+        body={toast.body}
+        onDismiss={() => setToast((t) => ({ ...t, visible: false }))}
+      />
     </div>
   )
 }

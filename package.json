@@ -1,7 +1,7 @@
 {
-  "name": "valentine-dashboard",
+  "name": "babe",
   "version": "1.0.0",
-  "description": "A cutesy Valentine's Day dashboard with productivity tools",
+  "description": "Babe. — a cutesy dashboard with productivity tools",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
@@ -30,8 +30,8 @@
     "vite": "^6.0.0"
   },
   "build": {
-    "appId": "com.valentine.dashboard",
-    "productName": "Valentine Dashboard",
+    "appId": "com.xosnos.babe",
+    "productName": "Babe",
     "mac": {
       "category": "public.app-category.productivity",
       "target": ["dmg", "zip"]

@@ -36,13 +36,13 @@ export function ExternalLinks() {
         <p className="text-sm text-valentine-500 font-cute">Our shared spaces</p>
       </div>
 
-      {/* Links Grid */}
-      <div className="flex gap-4">
+      {/* Links Grid - stack on small screens, side-by-side from sm */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {LINKS.map((link) => (
           <button
             key={link.label}
             onClick={() => openExternalLink(link.url)}
-            className="flex-1 group relative overflow-hidden card hover:shadow-glow hover:-translate-y-1 active:translate-y-0 focus-visible:ring-4 focus-visible:ring-valentine-300 focus-visible:outline-none transition-all duration-300 ease-out cursor-pointer"
+            className="min-w-0 group relative overflow-hidden card hover:shadow-glow hover:-translate-y-1 active:translate-y-0 focus-visible:ring-4 focus-visible:ring-valentine-300 focus-visible:outline-none transition-all duration-300 ease-out cursor-pointer"
             aria-label={`Open ${link.label}`}
           >
             {/* Gradient Background */}

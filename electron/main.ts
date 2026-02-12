@@ -1,5 +1,8 @@
 import { app, BrowserWindow, shell, ipcMain, Notification } from 'electron';
-import * as path from 'path';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -41,6 +44,7 @@ function createWindow() {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
     },
+    icon: path.join(__dirname, '../build/icon.png'),
   });
 
   if (process.env.NODE_ENV === 'development' || process.env.VITE_DEV_SERVER_URL) {

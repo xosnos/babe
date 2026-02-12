@@ -28,23 +28,23 @@ export function WellnessReminder() {
         </div>
       </div>
 
-      {/* Reminder Notification */}
+      {/* Reminder Notification - responsive width on small screens */}
       {currentReminder && (
         <div
-          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-out ${
+          className={`fixed top-4 left-2 right-2 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-50 transition-all duration-500 ease-out max-w-md sm:mx-auto ${
             isVisible
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 -translate-y-8 pointer-events-none'
           }`}
         >
           <div
-            className={`card max-w-md mx-auto shadow-cute-lg border-2 ${
+            className={`card w-full shadow-cute-lg border-2 ${
               currentReminder.type === 'water'
                 ? 'border-blue-200 bg-gradient-to-br from-blue-50/90 to-white/90'
                 : 'border-lavender bg-gradient-to-br from-lavender/30 to-white/90'
             }`}
           >
-            <div className="flex items-start gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-3 sm:gap-4">
               {/* Icon */}
               <div className="flex-shrink-0 text-4xl animate-bounce-soft">
                 {currentReminder.type === 'water' ? '💧' : '🌬️'}
@@ -63,7 +63,7 @@ export function WellnessReminder() {
               {/* Dismiss Button */}
               <button
                 onClick={dismiss}
-                className="flex-shrink-0 px-4 py-2 bg-gradient-to-r from-valentine-400 to-valentine-500 text-white font-cute font-bold rounded-xl shadow-cute hover:shadow-cute-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 ease-out text-sm"
+                className="flex-shrink-0 self-end sm:self-auto w-fit px-4 py-2 bg-gradient-to-r from-valentine-400 to-valentine-500 text-white font-cute font-bold rounded-xl shadow-cute hover:shadow-cute-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 ease-out text-sm"
               >
                 Got it! 💖
               </button>
