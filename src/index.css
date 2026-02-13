@@ -13,7 +13,8 @@
     font-family: 'Nunito', sans-serif;
     background: linear-gradient(135deg, #FFF0F3 0%, #FFE4E9 50%, #FFE0E6 100%);
     min-height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     user-select: none;
   }
 

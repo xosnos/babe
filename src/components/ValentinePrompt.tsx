@@ -5,14 +5,14 @@ interface ValentinePromptProps {
 }
 
 const CUTE_MESSAGES = [
-  'Are you sure? 🥺',
+  'Are you sure, babe? 🥺',
   'Pretty please? 💕',
   'Think again! 💭',
-  'But I love you! 💗',
+  'But I love you em yêu! 💗',
   'One more chance? 🌸',
   'Don\'t break my heart! 💔',
   'You know you want to! ✨',
-  'The Yes button is growing! 👀',
+  'The YES button is growing! 👀',
   'Just say yes! 💝',
   'I made this for you! 🎀',
 ];
@@ -66,7 +66,7 @@ export default function ValentinePrompt({ onAccept }: ValentinePromptProps) {
       <div className="relative z-10 text-center px-8 max-w-2xl">
         {/* Title */}
         <h1 className="pixel-text text-4xl md:text-5xl text-valentine-700 mb-12 animate-pulse-soft">
-          Will you be my Valentine?
+          Thao, will you be my Valentine?
         </h1>
 
         {/* Cute message that appears when No is clicked */}

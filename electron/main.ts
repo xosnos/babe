@@ -1,14 +1,14 @@
 import { app, BrowserWindow, shell, ipcMain, Notification } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { initializeDatabase, saveState, loadState, closeDatabase } from './db';
+import { initializeDatabase, saveState, loadState, closeDatabase } from './db.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 let mainWindow: BrowserWindow | null = null;
 
 // Allowed external domains for security
-const ALLOWED_DOMAINS = ['www.canva.com', 'calendar.google.com'];
+const ALLOWED_DOMAINS = ['www.canva.com', 'calendar.google.com', 'www.notion.so'];
 
 /**
  * Validates if a URL is safe to open externally.

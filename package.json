@@ -2,6 +2,7 @@
   "name": "babe",
   "version": "1.0.0",
   "description": "Babe. — a cutesy dashboard with productivity tools",
+  "author": "Steven <steven@xosnos.com>",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {

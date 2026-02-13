@@ -10,7 +10,8 @@ export function usePersistence() {
 
   useEffect(() => {
     // Only persist if we have electronAPI available
-    if (!window.electronAPI?.saveState) {
+    const electronAPI = window.electronAPI
+    if (!electronAPI?.saveState) {
       console.warn('electronAPI.saveState not available, skipping persistence')
       return
     }
@@ -34,7 +35,7 @@ export function usePersistence() {
           },
         }
 
-        const result = await window.electronAPI.saveState(persistState)
+        const result = await electronAPI.saveState(persistState)
         if (!result.success) {
           console.error('Failed to persist state:', result.error)
         }

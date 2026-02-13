@@ -100,14 +100,14 @@ export default function SuccessAnimation({ onComplete }: SuccessAnimationProps) 
               </svg>
             </div>
           )
-        })}
+        )}
       </div>
 
       {/* Main content */}
       <div className="relative z-10 text-center px-8">
         {/* YIPE! text */}
         <h1 className="pixel-text text-7xl md:text-8xl text-valentine-700 mb-8 animate-yipe-bounce">
-          YIPE!
+          YIPEE!
         </h1>
 
         {/* Subtitle */}

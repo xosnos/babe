@@ -47,13 +47,13 @@ export function useKeyboardShortcuts() {
         case 'f':
           // F: Focus Food timer section
           event.preventDefault()
-          document.querySelector('[data-timer="food"]')?.focus()
+          ;(document.querySelector('[data-timer="food"]') as HTMLElement | null)?.focus()
           break
 
         case 'p':
           // P: Focus Pomodoro timer section
           event.preventDefault()
-          document.querySelector('[data-timer="pomodoro"]')?.focus()
+          ;(document.querySelector('[data-timer="pomodoro"]') as HTMLElement | null)?.focus()
           break
       }
     }

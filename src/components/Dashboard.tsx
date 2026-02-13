@@ -34,15 +34,15 @@ export default function Dashboard() {
       <WellnessReminder />
 
       <div className="relative z-10 max-w-5xl mx-auto animate-fade-in">
+        <div className="card mb-6 py-3 text-center bg-white/90 border-valentine-200">
+          <h1 className="pixel-text text-sm sm:text-base text-valentine-600">
+            Have a lovely day, my pookie!
+          </h1>
+        </div>
+
         {/* Header */}
         <header className="text-center mb-8 pt-4">
-          <h1 className="pixel-text text-2xl md:text-3xl text-valentine-700 mb-3 flex items-center justify-center gap-3">
-            Babe
-            <span className="text-2xl animate-heartbeat" role="img" aria-label="Heart">💖</span>
-          </h1>
-          <p className="font-cute text-valentine-500 text-lg">
-            Have a lovely day, babe! <span role="img" aria-label="Sparkles">✨</span>
-          </p>
+          <ExternalLinks />
         </header>
 
         {/* Decorative divider */}
@@ -54,24 +54,12 @@ export default function Dashboard() {
 
         {/* Timers Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
             <PomodoroTimer />
           </div>
-          <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
             <FoodTimer />
           </div>
-        </div>
-
-        {/* Decorative divider */}
-        <div className="flex items-center justify-center mb-8 gap-3">
-          <div className="h-px w-24 bg-gradient-to-r from-transparent to-valentine-300" />
-          <span className="text-valentine-400 text-sm">♡</span>
-          <div className="h-px w-24 bg-gradient-to-l from-transparent to-valentine-300" />
-        </div>
-
-        {/* External Links */}
-        <div className="animate-slide-up card" style={{ animationDelay: '0.3s' }}>
-          <ExternalLinks />
         </div>
       </div>
     </div>
