@@ -83,18 +83,18 @@
   }
 
   .btn-secondary {
-    @apply px-4 py-2 bg-white/60 backdrop-blur-sm
-      text-valentine-700 font-cute font-semibold rounded-xl
-      border border-valentine-200/50 shadow-sm
-      hover:bg-white/80 hover:shadow-cute hover:-translate-y-0.5
+    @apply px-4 py-2 bg-white/90 backdrop-blur-sm
+      text-valentine-800 font-cute font-semibold rounded-xl
+      border border-valentine-300 shadow-sm
+      hover:bg-white hover:shadow-cute hover:-translate-y-0.5
       active:translate-y-0
-      focus-visible:ring-4 focus-visible:ring-valentine-300
+      focus-visible:ring-4 focus-visible:ring-valentine-400
       focus-visible:outline-none
       transition-all duration-200 ease-out;
   }
 
   .timer-display {
-    @apply font-mono text-5xl font-bold text-valentine-700
+    @apply font-mono text-5xl font-bold text-valentine-800
       tracking-wider tabular-nums;
   }
 
@@ -125,5 +125,14 @@
       radial-gradient(circle at 20% 50%, rgba(255, 182, 193, 0.15) 0%, transparent 50%),
       radial-gradient(circle at 80% 20%, rgba(255, 105, 180, 0.1) 0%, transparent 50%),
       radial-gradient(circle at 40% 80%, rgba(255, 192, 203, 0.12) 0%, transparent 50%);
+  }
+}
+
+/* Accessibility: Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react'
-import { useTimer, formatTime } from '../hooks/useTimer'
+import { useState, useEffect } from 'react'
+import { formatTime } from '../hooks/useTimer'
+import { useFoodTimerState, useDispatchAction } from '../state/AppContext'
 import { FOOD_PRESETS } from '../types'
 import { InAppToast } from './InAppToast'
 
@@ -13,35 +14,53 @@ const PRESET_LABELS: Record<string, string> = {
 const FOOD_TOAST = { title: 'Food Timer Complete! 🔔', body: 'Your food is ready!' }
 
 export default function FoodTimer() {
+  const timer = useFoodTimerState()
+  const { foodStart, foodPause, foodResume, foodReset, foodTick, foodSetDuration } = useDispatchAction()
+
   const [selectedPreset, setSelectedPreset] = useState<number | null>(null)
   const [customMinutes, setCustomMinutes] = useState('')
   const [customSeconds, setCustomSeconds] = useState('')
   const [celebrating, setCelebrating] = useState(false)
   const [toast, setToast] = useState({ visible: false, title: '', body: '' })
 
-  const handleComplete = useCallback(() => {
-    const showFallback = () => setToast({ visible: true, ...FOOD_TOAST })
-
-    if (window.electronAPI) {
-      window.electronAPI
-        .showNotification(FOOD_TOAST.title, FOOD_TOAST.body)
-        .then((result) => {
-          if (!result?.success) showFallback()
-        })
-        .catch(() => showFallback())
-    } else {
-      showFallback()
-    }
-
-    setCelebrating(true)
-    setTimeout(() => setCelebrating(false), 3000)
+  // Set initial duration from preset on mount
+  useEffect(() => {
+    foodSetDuration(FOOD_PRESETS[0].duration)
   }, [])
 
-  const timer = useTimer(FOOD_PRESETS[0].duration, handleComplete)
+  // Handle timer tick
+  useEffect(() => {
+    if (!timer.isRunning) return
+    const interval = setInterval(() => {
+      foodTick()
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [timer.isRunning, foodTick])
+
+  // Handle completion
+  useEffect(() => {
+    if (timer.remainingTime === 0 && timer.isRunning) {
+      const showFallback = () => setToast({ visible: true, ...FOOD_TOAST })
+
+      if (window.electronAPI) {
+        window.electronAPI
+          .showNotification(FOOD_TOAST.title, FOOD_TOAST.body)
+          .then((result) => {
+            if (!result?.success) showFallback()
+          })
+          .catch(() => showFallback())
+      } else {
+        showFallback()
+      }
+
+      setCelebrating(true)
+      setTimeout(() => setCelebrating(false), 3000)
+    }
+  }, [timer.remainingTime, timer.isRunning])
 
   const handlePresetClick = (index: number) => {
     setSelectedPreset(index)
-    timer.setDuration(FOOD_PRESETS[index].duration)
+    foodSetDuration(FOOD_PRESETS[index].duration)
     setCustomMinutes('')
     setCustomSeconds('')
   }
@@ -52,18 +71,18 @@ export default function FoodTimer() {
     const total = minutes * 60 + seconds
 
     if (total > 0) {
-      timer.setDuration(total)
+      foodSetDuration(total)
       setSelectedPreset(null)
     }
   }
 
   const handleStartPause = () => {
     if (timer.isRunning) {
-      timer.pause()
+      foodPause()
     } else if (timer.isPaused) {
-      timer.resume()
+      foodResume()
     } else {
-      timer.start()
+      foodStart()
     }
   }
 
@@ -79,7 +98,7 @@ export default function FoodTimer() {
   const progress = timer.duration > 0 ? ((timer.duration - timer.remainingTime) / timer.duration) * 100 : 0
 
   return (
-    <div className="card relative">
+    <div className="card relative" data-timer="food" data-running={timer.isRunning}>
       <div className="flex items-center gap-2 mb-6">
         <span className="text-2xl" role="img" aria-label="Cooking">🍳</span>
         <h2 className="pixel-text text-xl text-valentine-700">Food Timer</h2>
@@ -169,7 +188,7 @@ export default function FoodTimer() {
           {timer.isRunning ? '⏸️ Pause' : timer.isPaused ? '▶️ Resume' : '▶️ Start'}
         </button>
         <button
-          onClick={timer.reset}
+          onClick={foodReset}
           className="btn-secondary"
           aria-label="Reset timer"
         >

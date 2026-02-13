@@ -1,6 +1,7 @@
 import { app, BrowserWindow, shell, ipcMain, Notification } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { initializeDatabase, saveState, loadState, closeDatabase } from './db';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -42,6 +43,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      sandbox: true,
       preload: path.join(__dirname, 'preload.js'),
     },
     icon: path.join(__dirname, '../build/icon.png'),
@@ -86,6 +88,15 @@ ipcMain.handle('open-external', async (_event, url: string) => {
 
 // IPC: Show notification
 ipcMain.handle('show-notification', (_event, title: string, body: string) => {
+  // Validate input lengths to prevent memory/UI issues
+  if (typeof title !== 'string' || typeof body !== 'string') {
+    return { success: false, error: 'Invalid notification parameters' };
+  }
+
+  if (title.length > 256 || body.length > 1024) {
+    return { success: false, error: 'Notification text too long' };
+  }
+
   if (Notification.isSupported()) {
     const notification = new Notification({ title, body });
     notification.show();
@@ -94,7 +105,32 @@ ipcMain.handle('show-notification', (_event, title: string, body: string) => {
   return { success: false, error: 'Notifications not supported' };
 });
 
+// IPC: Save application state
+ipcMain.handle('save-state', (_event, state: any) => {
+  try {
+    const success = saveState(state);
+    return { success };
+  } catch (error) {
+    console.error('Error saving state:', error);
+    return { success: false, error: String(error) };
+  }
+});
+
+// IPC: Load application state
+ipcMain.handle('load-state', () => {
+  try {
+    const state = loadState();
+    return { success: !!state, data: state };
+  } catch (error) {
+    console.error('Error loading state:', error);
+    return { success: false, error: String(error) };
+  }
+});
+
 app.whenReady().then(() => {
+  // Initialize database
+  initializeDatabase();
+
   createWindow();
 
   app.on('activate', () => {
@@ -108,4 +144,8 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+app.on('quit', () => {
+  closeDatabase();
 });

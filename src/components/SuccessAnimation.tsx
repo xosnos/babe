@@ -1,71 +1,93 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react'
+import { useDispatchAction } from '../state/AppContext'
 
 interface SuccessAnimationProps {
   onComplete: () => void;
 }
 
 export default function SuccessAnimation({ onComplete }: SuccessAnimationProps) {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onComplete();
-    }, 2500);
+  const { animationComplete } = useDispatchAction()
 
-    return () => clearTimeout(timer);
-  }, [onComplete]);
+  // Memoize confetti particles
+  const confettiParticles = useMemo(() => {
+    return [...Array(30)].map((_, i) => ({
+      id: i,
+      delay: Math.random() * 0.5,
+      duration: 2 + Math.random() * 1.5,
+      startX: Math.random() * 100,
+      size: 20 + Math.random() * 30,
+      emoji: ['💕', '💖', '💗', '💓', '💝', '💘'][Math.floor(Math.random() * 6)],
+    }))
+  }, [])
+
+  // Memoize sparkle particles
+  const sparkleParticles = useMemo(() => {
+    return [...Array(20)].map((_, i) => ({
+      id: i,
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+      delay: Math.random() * 1.5,
+      size: 8 + Math.random() * 16,
+    }))
+  }, [])
+
+  useEffect(() => {
+    // Dispatch animation complete and call prop callback if provided
+    const timer = setTimeout(() => {
+      animationComplete()
+      onComplete()
+    }, 2500)
+
+    // Safety timeout - max 5 seconds per design spec
+    const safetyTimer = setTimeout(() => {
+      animationComplete()
+      onComplete()
+    }, 5000)
+
+    return () => {
+      clearTimeout(timer)
+      clearTimeout(safetyTimer)
+    }
+  }, [animationComplete, onComplete])
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-valentine-100 via-valentine-200 to-valentine-300 pointer-events-none">
       {/* Heart confetti */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(30)].map((_, i) => {
-          const delay = Math.random() * 0.5;
-          const duration = 2 + Math.random() * 1.5;
-          const startX = Math.random() * 100;
-          const size = 20 + Math.random() * 30;
-          const heartEmojis = ['💕', '💖', '💗', '💓', '💝', '💘'];
-          const emoji = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-
-          return (
-            <div
-              key={i}
-              className="absolute animate-confetti-fall"
-              style={{
-                left: `${startX}%`,
-                top: '-50px',
-                fontSize: `${size}px`,
-                animationDelay: `${delay}s`,
-                animationDuration: `${duration}s`,
-              }}
-              role="img"
-              aria-label="Confetti heart"
-            >
-              {emoji}
-            </div>
-          );
-        })}
+        {confettiParticles.map((particle) => (
+          <div
+            key={particle.id}
+            className="absolute animate-confetti-fall"
+            style={{
+              left: `${particle.startX}%`,
+              top: '-50px',
+              fontSize: `${particle.size}px`,
+              animationDelay: `${particle.delay}s`,
+              animationDuration: `${particle.duration}s`,
+            }}
+            role="img"
+            aria-label="Confetti heart"
+          >
+            {particle.emoji}
+          </div>
+        ))}
       </div>
 
       {/* Sparkle effects */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => {
-          const top = Math.random() * 100;
-          const left = Math.random() * 100;
-          const delay = Math.random() * 1.5;
-          const size = 8 + Math.random() * 16;
-
-          return (
+        {sparkleParticles.map((particle) => (
             <div
-              key={i}
+              key={particle.id}
               className="absolute animate-sparkle"
               style={{
-                top: `${top}%`,
-                left: `${left}%`,
-                animationDelay: `${delay}s`,
+                top: `${particle.top}%`,
+                left: `${particle.left}%`,
+                animationDelay: `${particle.delay}s`,
               }}
             >
               <svg
-                width={size}
-                height={size}
+                width={particle.size}
+                height={particle.size}
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +99,7 @@ export default function SuccessAnimation({ onComplete }: SuccessAnimationProps) 
                 />
               </svg>
             </div>
-          );
+          )
         })}
       </div>
 

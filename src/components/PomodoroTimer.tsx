@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react'
-import { useTimer, formatTime } from '../hooks/useTimer'
+import { useState, useCallback, useEffect } from 'react'
+import { formatTime } from '../hooks/useTimer'
+import { usePomodoroTimerState, useDispatchAction } from '../state/AppContext'
 import { InAppToast } from './InAppToast'
 
 const PRESETS = [
@@ -11,42 +12,60 @@ const PRESETS = [
 const POMODORO_TOAST = { title: 'Pomodoro Complete! 🎉', body: 'Great work! Time for a break.' }
 
 export default function PomodoroTimer() {
+  const timer = usePomodoroTimerState()
+  const { pomodoroStart, pomodoroPause, pomodoroResume, pomodoroReset, pomodoroTick, pomodoroSetDuration, pomodoroSetPreset } = useDispatchAction()
+
   const [selectedPreset, setSelectedPreset] = useState(1) // Default to 25 min
   const [celebrating, setCelebrating] = useState(false)
   const [toast, setToast] = useState({ visible: false, title: '', body: '' })
 
-  const handleComplete = useCallback(() => {
-    const showFallback = () => setToast({ visible: true, ...POMODORO_TOAST })
-
-    if (window.electronAPI) {
-      window.electronAPI
-        .showNotification(POMODORO_TOAST.title, POMODORO_TOAST.body)
-        .then((result) => {
-          if (!result?.success) showFallback()
-        })
-        .catch(() => showFallback())
-    } else {
-      showFallback()
-    }
-
-    setCelebrating(true)
-    setTimeout(() => setCelebrating(false), 3000)
+  // Set initial duration from preset on mount
+  useEffect(() => {
+    pomodoroSetDuration(PRESETS[1].duration)
   }, [])
 
-  const timer = useTimer(PRESETS[1].duration, handleComplete)
+  // Handle timer tick
+  useEffect(() => {
+    if (!timer.isRunning) return
+    const interval = setInterval(() => {
+      pomodoroTick()
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [timer.isRunning, pomodoroTick])
+
+  // Handle completion
+  useEffect(() => {
+    if (timer.remainingTime === 0 && timer.isRunning) {
+      const showFallback = () => setToast({ visible: true, ...POMODORO_TOAST })
+
+      if (window.electronAPI) {
+        window.electronAPI
+          .showNotification(POMODORO_TOAST.title, POMODORO_TOAST.body)
+          .then((result) => {
+            if (!result?.success) showFallback()
+          })
+          .catch(() => showFallback())
+      } else {
+        showFallback()
+      }
+
+      setCelebrating(true)
+      setTimeout(() => setCelebrating(false), 3000)
+    }
+  }, [timer.remainingTime, timer.isRunning])
 
   const handlePresetClick = (index: number, duration: number) => {
     setSelectedPreset(index)
-    timer.setDuration(duration)
+    pomodoroSetDuration(duration)
   }
 
   const handleStartPause = () => {
     if (timer.isRunning) {
-      timer.pause()
+      pomodoroPause()
     } else if (timer.isPaused) {
-      timer.resume()
+      pomodoroResume()
     } else {
-      timer.start()
+      pomodoroStart()
     }
   }
 
@@ -62,7 +81,7 @@ export default function PomodoroTimer() {
   const progress = ((timer.duration - timer.remainingTime) / timer.duration) * 100
 
   return (
-    <div className="card">
+    <div className="card" data-timer="pomodoro" data-running={timer.isRunning}>
       <div className="flex items-center gap-2 mb-6">
         <span className="text-2xl" role="img" aria-label="Tomato">🍅</span>
         <h2 className="pixel-text text-xl text-valentine-700">Pomodoro Timer</h2>
@@ -116,7 +135,7 @@ export default function PomodoroTimer() {
           {timer.isRunning ? '⏸️ Pause' : timer.isPaused ? '▶️ Resume' : '▶️ Start'}
         </button>
         <button
-          onClick={timer.reset}
+          onClick={pomodoroReset}
           className="btn-secondary"
           aria-label="Reset timer"
         >
