@@ -88,8 +88,12 @@ export function appReducer(state: ApplicationState, action: AppAction): Applicat
         phase: 'success-animation',
         valentinePrompt: { ...state.valentinePrompt, showSuccessAnimation: true },
       }
+    case 'SET_PHASE':
+      return {
+        ...state,
+        phase: action.payload,
+      }
     case 'ANIMATION_COMPLETE':
-    case 'TRANSITION_TO_DASHBOARD':
       return {
         ...state,
         phase: 'dashboard',
@@ -206,10 +210,15 @@ export function appReducer(state: ApplicationState, action: AppAction): Applicat
         },
       }
     }
-    case 'LOAD_PERSISTED_STATE':
+    case 'LOAD_STATE':
       return {
         ...state,
-        valentineAccepted: action.payload.valentineAccepted ?? state.valentineAccepted,
+        ...action.payload,
+        // Make sure we deeply merge the dashboard state to avoid wiping out properties
+        dashboard: {
+          ...state.dashboard,
+          ...(action.payload.dashboard || {}),
+        }
       }
     case 'INITIALIZE_STATE':
     default:

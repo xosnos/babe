@@ -114,8 +114,7 @@ export type AppAction =
   | { type: 'ANIMATION_COMPLETE' }
   | { type: 'SET_VALENTINE_MESSAGE'; payload: string }
   | { type: 'SET_WIGGLE'; payload: boolean }
-  // Phase Transitions
-  | { type: 'TRANSITION_TO_DASHBOARD' }
+  | { type: 'SET_PHASE'; payload: AppPhase }
   | { type: 'RESET_TO_VALENTINE' }
   // Pomodoro Timer Actions
   | { type: 'POMODORO_START' }
@@ -139,7 +138,7 @@ export type AppAction =
   | { type: 'WELLNESS_SCHEDULE_NEXT' }
   | { type: 'WELLNESS_CHECK_HOURS' }
   // Persistence Actions
-  | { type: 'LOAD_PERSISTED_STATE'; payload: Partial<PersistedState> }
+  | { type: 'LOAD_STATE'; payload: Partial<ApplicationState> }
   // Batch/Reset Actions
   | { type: 'INITIALIZE_STATE' };
 

@@ -4,12 +4,6 @@ These tasks are still unchecked in `docs/tasks.md` after the implementation revi
 
 ## Core Tasks
 
-- [ ] 1. Set up project structure and development environment
-- [ ] 2. Implement application state management
-- [ ] 2.1 Create TypeScript interfaces for all state models
-- [ ] 2.2 Implement root state reducer with Context API
-- [ ] 4. Checkpoint - Ensure Valentine Prompt works correctly
-- [ ] 8. Checkpoint - Ensure all timers work correctly
 - [ ] 11. Implement state persistence with SQLite
 - [ ] 11.1 Set up better-sqlite3 in main process
 - [ ] 11.2 Implement IPC handlers for state persistence
@@ -31,10 +25,6 @@ These tasks are still unchecked in `docs/tasks.md` after the implementation revi
 
 ## Optional Tasks (Marked `*`)
 
-- [ ]* 2.3 Write property test for state transitions
-- [ ]* 3.3 Write property tests for button behavior
-- [ ]* 3.5 Write property tests for animation and transitions
-- [ ]* 3.6 Write unit tests for edge cases
 - [ ]* 5.2 Write property test for dashboard access control
 - [ ]* 6.3 Write property tests for Pomodoro timer
 - [ ]* 6.4 Write unit tests for Pomodoro timer edge cases
@@ -47,3 +37,4 @@ These tasks are still unchecked in `docs/tasks.md` after the implementation revi
 - [ ]* 11.4 Write unit tests for state persistence
 - [ ]* 19. Integration testing
 - [ ]* 19.1 Write integration tests for complete flows
+
